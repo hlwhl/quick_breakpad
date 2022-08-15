@@ -66,7 +66,6 @@ static bool dumpCallback(
 }
 
 QuickBreakpadPlugin::QuickBreakpadPlugin() {
-  static google_breakpad::ExceptionHandler handler(L".", nullptr, dumpCallback, nullptr, google_breakpad::ExceptionHandler::HANDLER_ALL);
 }
 
 QuickBreakpadPlugin::~QuickBreakpadPlugin() {}
@@ -75,6 +74,7 @@ void QuickBreakpadPlugin::HandleMethodCall(
     const flutter::MethodCall<flutter::EncodableValue> &method_call,
     std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
   if (method_call.method_name().compare("getPlatformVersion") == 0) {
+   static google_breakpad::ExceptionHandler handler(L".", nullptr, dumpCallback, nullptr, google_breakpad::ExceptionHandler::HANDLER_ALL);
     std::ostringstream version_stream;
     version_stream << "Windows ";
     if (IsWindows10OrGreater()) {
