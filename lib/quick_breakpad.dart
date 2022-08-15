@@ -11,4 +11,8 @@ class QuickBreakpad {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
+
+  static Future<void> regCrashHandler(String path) async {
+    await _channel.invokeMethod('regCrashHandler', path);
+  }
 }

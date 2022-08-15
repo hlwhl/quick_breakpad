@@ -65,6 +65,18 @@ static bool dumpCallback(
   return succeeded;
 }
 
+inline
+std::wstring StringToWString(const std::string& str)
+{
+    int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
+    wchar_t* wide = new wchar_t[len + 1];
+    memset(wide, '\0', sizeof(wchar_t) * (len + 1));
+    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, wide, len);
+    std::wstring w_str(wide);
+    delete[] wide;
+    return w_str;
+}
+
 QuickBreakpadPlugin::QuickBreakpadPlugin() {
 }
 
@@ -85,8 +97,15 @@ void QuickBreakpadPlugin::HandleMethodCall(
       version_stream << "7";
     }
     result->Success(flutter::EncodableValue(version_stream.str()));
-  } else {
-    result->NotImplemented();
+  } else if (method_call.method_name().compare("regCrashHandler") == 0) {
+      auto* path = std::get_if<std::string>(method_call.arguments());
+      if (path != nullptr) {
+          auto wPath =  StringToWString(*path);
+          static google_breakpad::ExceptionHandler handler(wPath, nullptr, dumpCallback, nullptr, google_breakpad::ExceptionHandler::HANDLER_ALL);
+      }
+  }
+  else {
+      result->NotImplemented();
   }
 }
 
