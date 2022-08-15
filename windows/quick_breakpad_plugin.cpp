@@ -103,6 +103,7 @@ void QuickBreakpadPlugin::HandleMethodCall(
           auto wPath =  StringToWString(*path);
           static google_breakpad::ExceptionHandler handler(wPath, nullptr, dumpCallback, nullptr, google_breakpad::ExceptionHandler::HANDLER_ALL);
       }
+      result->Success();
   }
   else {
       result->NotImplemented();
